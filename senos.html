@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trigonometria Visual — Seno, Cosseno e Tangente</title>
+    <style>
+      :root {
+        --bg: #071322;
+        --bg-soft: #0d1f35;
+        --card: #122a47;
+        --text: #ecf3ff;
+        --muted: #b8c9e8;
+        --accent: #5bd4ff;
+        --accent-2: #7dffb2;
+        --accent-3: #ffc15d;
+        --danger: #ff7f7f;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+        color: var(--text);
+        background: radial-gradient(circle at top right, #173863, var(--bg) 55%);
+        line-height: 1.65;
+      }
+
+      header {
+        padding: 4rem 1.2rem 2rem;
+        text-align: center;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(2rem, 4.3vw, 3.6rem);
+      }
+
+      .subtitle {
+        max-width: 920px;
+        margin: 1rem auto 0;
+        color: var(--muted);
+        font-size: clamp(1rem, 2vw, 1.3rem);
+      }
+
+      main {
+        width: min(1200px, 94vw);
+        margin: 0 auto 4rem;
+        display: grid;
+        gap: 1.3rem;
+      }
+
+      section {
+        background: linear-gradient(140deg, rgba(18, 42, 71, 0.95), rgba(9, 24, 44, 0.92));
+        border: 1px solid rgba(151, 190, 255, 0.2);
+        border-radius: 18px;
+        padding: clamp(1rem, 2.2vw, 2rem);
+        box-shadow: 0 16px 35px rgba(0, 0, 0, 0.25);
+      }
+
+      h2 {
+        margin-top: 0;
+        color: var(--accent);
+      }
+
+      .grid-two {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+      }
+
+      .card {
+        background: var(--bg-soft);
+        border: 1px solid rgba(130, 174, 255, 0.25);
+        border-radius: 14px;
+        padding: 1rem;
+      }
+
+      .formula {
+        font-family: "Courier New", monospace;
+        background: rgba(4, 13, 24, 0.85);
+        border-left: 4px solid var(--accent-2);
+        padding: 0.8rem;
+        border-radius: 8px;
+        margin: 0.7rem 0;
+      }
+
+      label {
+        font-weight: 600;
+      }
+
+      input[type='range'] {
+        width: 100%;
+        accent-color: var(--accent);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 0.7rem;
+      }
+
+      .stat {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        padding: 0.5rem;
+        border: 1px solid rgba(164, 196, 255, 0.25);
+      }
+
+      svg,
+      canvas {
+        width: 100%;
+        max-width: 520px;
+        background: #0a1830;
+        border: 1px solid rgba(127, 170, 255, 0.35);
+        border-radius: 10px;
+        display: block;
+        margin: 0.5rem auto;
+      }
+
+      .note {
+        border-left: 4px solid var(--accent-3);
+        background: rgba(255, 193, 93, 0.1);
+        padding: 0.7rem 0.8rem;
+        border-radius: 8px;
+      }
+
+      details {
+        background: #0b1c33;
+        border-radius: 10px;
+        margin: 0.6rem 0;
+        border: 1px solid rgba(142, 184, 255, 0.25);
+        padding: 0.6rem 0.8rem;
+      }
+
+      summary {
+        cursor: pointer;
+        color: var(--accent-2);
+        font-weight: 600;
+      }
+
+      .exercise {
+        border: 1px dashed rgba(164, 196, 255, 0.4);
+        padding: 0.8rem;
+        border-radius: 8px;
+        margin-bottom: 0.8rem;
+      }
+
+      .question-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 0.9rem;
+      }
+
+      .visual-question {
+        border: 1px solid rgba(164, 196, 255, 0.35);
+        background: rgba(3, 17, 32, 0.7);
+        border-radius: 12px;
+        padding: 0.8rem;
+      }
+
+      .visual-question h4 {
+        margin: 0.2rem 0 0.5rem;
+        color: #9ddbff;
+      }
+
+      .mini-svg {
+        width: 100%;
+        height: 150px;
+        max-width: none;
+      }
+
+      .visual-answer {
+        margin-top: 0.5rem;
+        display: none;
+        color: #c6ffd8;
+      }
+
+      .answer {
+        display: none;
+        color: #c6ffd8;
+      }
+
+      button {
+        background: linear-gradient(120deg, #39b7ff, #5efec8);
+        border: none;
+        color: #03243e;
+        padding: 0.5rem 0.9rem;
+        border-radius: 8px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      footer {
+        text-align: center;
+        color: var(--muted);
+        padding: 1rem;
+      }
+
+      .small {
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Seno, Cosseno e Tangente — do Zero ao Avançado</h1>
+      <p class="subtitle">
+        Um guia visual e completo para você entender trigonometria no <strong>triângulo retângulo</strong>, no
+        <strong>círculo trigonométrico</strong> e na conexão dos dois ao mesmo tempo.
+      </p>
+    </header>
+
+    <main>
+      <section>
+        <h2>1) Começando do básico lógico: o que são seno, cosseno e tangente?</h2>
+        <div class="grid-two">
+          <div class="card">
+            <p>
+              Em um triângulo retângulo (aquele que tem um ângulo de 90°), escolha um ângulo agudo \(\theta\).
+              A partir desse ângulo, os lados ganham nomes:
+            </p>
+            <ul>
+              <li><strong>Hipotenusa</strong>: lado maior, oposto ao ângulo de 90°.</li>
+              <li><strong>Cateto oposto</strong>: lado em frente ao ângulo \(\theta\).</li>
+              <li><strong>Cateto adjacente</strong>: lado encostado no ângulo \(\theta\).</li>
+            </ul>
+            <div class="formula">
+              sen(θ) = oposto / hipotenusa<br />
+              cos(θ) = adjacente / hipotenusa<br />
+              tg(θ) = oposto / adjacente = sen(θ) / cos(θ)
+            </div>
+          </div>
+          <div class="card">
+            <p>
+              Repare na lógica: seno e cosseno são <strong>projeções</strong> de um ponto, enquanto a tangente é
+              uma <strong>razão entre projeções</strong>. Isso será super importante no círculo.
+            </p>
+            <p class="note">
+              Dica de memória: <strong>SOH-CAH-TOA</strong><br />
+              Sine = Opposite / Hypotenuse<br />
+              Cosine = Adjacent / Hypotenuse<br />
+              Tangent = Opposite / Adjacent
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>2) Visualização no triângulo retângulo (interativa)</h2>
+        <div class="grid-two">
+          <div class="card">
+            <label for="angleTriangle">Ângulo θ (em graus): <span id="angleTriangleValue">35°</span></label>
+            <input id="angleTriangle" type="range" min="5" max="85" value="35" />
+
+            <label for="hypotenuse">Hipotenusa: <span id="hypotenuseValue">10</span></label>
+            <input id="hypotenuse" type="range" min="5" max="20" value="10" step="0.5" />
+
+            <div class="stats" id="triangleStats"></div>
+          </div>
+          <div class="card">
+            <svg id="triangleSvg" viewBox="0 0 400 300" aria-label="Triângulo interativo"></svg>
+            <p class="small">
+              Ao mexer no ângulo, os comprimentos mudam, mas as razões trigonométricas continuam coerentes.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>3) Círculo trigonométrico: onde tudo se unifica</h2>
+        <div class="grid-two">
+          <div class="card">
+            <label for="angleCircle">Ângulo θ no círculo: <span id="angleCircleValue">35°</span></label>
+            <input id="angleCircle" type="range" min="0" max="360" value="35" />
+            <div class="formula">
+              No círculo de raio 1:<br />
+              x = cos(θ)<br />
+              y = sen(θ)<br />
+              tg(θ) = y/x (quando x ≠ 0)
+            </div>
+            <div class="stats" id="circleStats"></div>
+          </div>
+          <div class="card">
+            <svg id="circleSvg" viewBox="0 0 420 320" aria-label="Círculo trigonométrico"></svg>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>4) Triângulo + Círculo ao mesmo tempo (conexão completa)</h2>
+        <p>
+          A ideia central: um triângulo retângulo pode ser “embutido” dentro do círculo unitário. O ponto no círculo
+          com ângulo \(\theta\) tem coordenadas \((cos(\theta), sen(\theta))\), e essas coordenadas são exatamente
+          os mesmos valores das razões do triângulo quando normalizamos a hipotenusa para 1.
+        </p>
+        <div class="grid-two">
+          <div class="card">
+            <svg id="combinedSvg" viewBox="0 0 520 320" aria-label="Conexão entre triângulo e círculo"></svg>
+          </div>
+          <div class="card">
+            <ul id="combinedInsights"></ul>
+            <p class="note">
+              Quando a hipotenusa é 1, os catetos viram diretamente <strong>cos(θ)</strong> e <strong>sen(θ)</strong>.
+              Por isso o círculo unitário é tão poderoso.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>5) Ondas trigonométricas e comportamento da tangente</h2>
+        <p>
+          Aqui está o gráfico de sen(x), cos(x) e tg(x). Observe como a tangente “explode” perto de
+          90°, 270° etc. (onde cos(x) = 0).
+        </p>
+        <canvas id="trigCanvas" width="900" height="380"></canvas>
+        <p class="small">
+          Azul = seno, verde = cosseno, laranja = tangente (recortada para caber na tela).
+        </p>
+      </section>
+
+      <section>
+        <h2>6) Identidades importantes e leitura avançada</h2>
+        <div class="grid-two">
+          <div class="card">
+            <div class="formula">sen²(θ) + cos²(θ) = 1</div>
+            <p>
+              Essa identidade vem do Teorema de Pitágoras aplicado no círculo unitário. Se x = cos(θ) e y = sen(θ),
+              então x² + y² = 1.
+            </p>
+            <div class="formula">1 + tg²(θ) = sec²(θ), quando cos(θ) ≠ 0</div>
+            <p>
+              Dividindo a identidade principal por cos²(θ), você obtém essa relação útil em cálculo e física.
+            </p>
+          </div>
+          <div class="card">
+            <details>
+              <summary>Por que seno e cosseno oscilam?</summary>
+              <p>
+                Porque são projeções de um ponto que gira uniformemente no círculo. Projeções em eixos geram variações
+                periódicas suaves, por isso aparecem em ondas, som, eletricidade e movimento harmônico.
+              </p>
+            </details>
+            <details>
+              <summary>Como a tangente se relaciona com inclinação?</summary>
+              <p>
+                A tangente de um ângulo é a inclinação da reta que faz esse ângulo com o eixo x. Em geometria analítica,
+                ela representa o coeficiente angular m de uma reta (quando o ângulo é medido com o eixo x positivo).
+              </p>
+            </details>
+            <details>
+              <summary>Graus e radianos: qual usar?</summary>
+              <p>
+                Em estudos iniciais, graus são intuitivos; em matemática avançada, radianos simplificam derivadas,
+                integrais e modelos físicos.
+              </p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>7) Exercícios guiados (com respostas)</h2>
+        <div class="exercise">
+          <p><strong>Exercício 1:</strong> Em um triângulo com hipotenusa 10 e ângulo de 30°, encontre cateto oposto e adjacente.</p>
+          <button onclick="toggleAnswer('a1')">Mostrar resposta</button>
+          <p id="a1" class="answer">oposto = 10·sen(30°) = 5; adjacente = 10·cos(30°) ≈ 8,66.</p>
+        </div>
+        <div class="exercise">
+          <p><strong>Exercício 2:</strong> No círculo unitário, qual ponto corresponde a 180°?</p>
+          <button onclick="toggleAnswer('a2')">Mostrar resposta</button>
+          <p id="a2" class="answer">(cos(180°), sen(180°)) = (-1, 0).</p>
+        </div>
+        <div class="exercise">
+          <p><strong>Exercício 3:</strong> Por que tg(90°) não existe?</p>
+          <button onclick="toggleAnswer('a3')">Mostrar resposta</button>
+          <p id="a3" class="answer">Porque tg(θ) = sen(θ)/cos(θ), e cos(90°)=0; divisão por zero não é definida.</p>
+        </div>
+      </section>
+
+      <section>
+        <h2>8) Banco com 24 perguntas extras (todas visuais)</h2>
+        <p>
+          Aqui estão <strong>24 perguntas adicionais</strong> com diagramas visuais. Você pode abrir uma por uma e conferir
+          as respostas imediatamente.
+        </p>
+        <div id="visualQuestionBank" class="question-grid"></div>
+      </section>
+    </main>
+
+    <footer>
+      Feito para quem quer aprender trigonometria de forma visual, lógica e profunda.
+    </footer>
+
+    <script>
+      const triangleSvg = document.getElementById('triangleSvg');
+      const circleSvg = document.getElementById('circleSvg');
+      const combinedSvg = document.getElementById('combinedSvg');
+      const triangleStats = document.getElementById('triangleStats');
+      const circleStats = document.getElementById('circleStats');
+      const combinedInsights = document.getElementById('combinedInsights');
+
+      const angleTriangle = document.getElementById('angleTriangle');
+      const hypotenuse = document.getElementById('hypotenuse');
+      const angleTriangleValue = document.getElementById('angleTriangleValue');
+      const hypotenuseValue = document.getElementById('hypotenuseValue');
+
+      const angleCircle = document.getElementById('angleCircle');
+      const angleCircleValue = document.getElementById('angleCircleValue');
+
+      function degToRad(deg) {
+        return (deg * Math.PI) / 180;
+      }
+
+      function fmt(n) {
+        return Number.isFinite(n) ? n.toFixed(4) : 'indefinida';
+      }
+
+      function drawTriangle() {
+        const theta = Number(angleTriangle.value);
+        const h = Number(hypotenuse.value);
+        const rad = degToRad(theta);
+
+        const op = h * Math.sin(rad);
+        const adj = h * Math.cos(rad);
+
+        angleTriangleValue.textContent = `${theta}°`;
+        hypotenuseValue.textContent = h.toFixed(1);
+
+        triangleStats.innerHTML = `
+          <div class="stat"><strong>Cateto oposto</strong><br>${fmt(op)}</div>
+          <div class="stat"><strong>Cateto adjacente</strong><br>${fmt(adj)}</div>
+          <div class="stat"><strong>sen(θ)</strong><br>${fmt(Math.sin(rad))}</div>
+          <div class="stat"><strong>cos(θ)</strong><br>${fmt(Math.cos(rad))}</div>
+          <div class="stat"><strong>tg(θ)</strong><br>${fmt(Math.tan(rad))}</div>
+        `;
+
+        const scale = 18;
+        const x0 = 50;
+        const y0 = 250;
+        const x1 = x0 + adj * scale;
+        const y1 = y0;
+        const x2 = x1;
+        const y2 = y0 - op * scale;
+
+        triangleSvg.innerHTML = `
+          <line x1="20" y1="250" x2="370" y2="250" stroke="#325987" stroke-width="1" />
+          <line x1="50" y1="20" x2="50" y2="270" stroke="#325987" stroke-width="1" />
+          <polygon points="${x0},${y0} ${x1},${y1} ${x2},${y2}" fill="rgba(91,212,255,.2)" stroke="#5bd4ff" stroke-width="2" />
+          <line x1="${x0}" y1="${y0}" x2="${x2}" y2="${y2}" stroke="#7dffb2" stroke-width="3" />
+          <text x="${(x0 + x1) / 2}" y="${y0 + 20}" fill="#fff">adj = ${fmt(adj)}</text>
+          <text x="${x2 + 8}" y="${(y0 + y2) / 2}" fill="#fff">op = ${fmt(op)}</text>
+          <text x="${(x0 + x2) / 2 - 10}" y="${(y0 + y2) / 2 - 10}" fill="#7dffb2">hip = ${h.toFixed(1)}</text>
+          <rect x="${x1 - 14}" y="${y1 - 14}" width="14" height="14" fill="none" stroke="#ffc15d" stroke-width="2" />
+          <text x="${x0 + 15}" y="${y0 - 8}" fill="#ffc15d">θ=${theta}°</text>
+        `;
+      }
+
+      function drawCircle() {
+        const theta = Number(angleCircle.value);
+        const rad = degToRad(theta);
+        angleCircleValue.textContent = `${theta}°`;
+
+        const cx = 160;
+        const cy = 160;
+        const r = 110;
+        const x = cx + r * Math.cos(rad);
+        const y = cy - r * Math.sin(rad);
+
+        const c = Math.cos(rad);
+        const s = Math.sin(rad);
+        const t = Math.abs(c) < 1e-9 ? Infinity : s / c;
+
+        circleStats.innerHTML = `
+          <div class="stat"><strong>cos(θ)</strong><br>${fmt(c)}</div>
+          <div class="stat"><strong>sen(θ)</strong><br>${fmt(s)}</div>
+          <div class="stat"><strong>tg(θ)</strong><br>${fmt(t)}</div>
+          <div class="stat"><strong>Ponto</strong><br>(${fmt(c)}, ${fmt(s)})</div>
+        `;
+
+        const tanX = cx + r;
+        const tanY = cy - (Math.abs(c) < 1e-9 ? 0 : r * t);
+
+        circleSvg.innerHTML = `
+          <line x1="20" y1="160" x2="400" y2="160" stroke="#325987" />
+          <line x1="160" y1="20" x2="160" y2="300" stroke="#325987" />
+          <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#8fb8ff" stroke-width="2" />
+          <line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#5bd4ff" stroke-width="3" />
+          <line x1="${x}" y1="${y}" x2="${x}" y2="${cy}" stroke="#7dffb2" stroke-width="2" />
+          <line x1="${x}" y1="${cy}" x2="${cx}" y2="${cy}" stroke="#ffc15d" stroke-width="2" />
+          <circle cx="${x}" cy="${y}" r="5" fill="#fff" />
+          <text x="${x + 8}" y="${y - 8}" fill="#fff">P</text>
+          <text x="${cx + r + 8}" y="${cy + 20}" fill="#ffcb79">reta da tangente</text>
+          <line x1="${cx + r}" y1="20" x2="${cx + r}" y2="300" stroke="#ffcb79" stroke-dasharray="5 5" />
+          ${Math.abs(c) < 0.04 ? '' : `<line x1="${cx + r}" y1="${cy}" x2="${tanX}" y2="${tanY}" stroke="#ff7f7f" stroke-width="2" />`}
+        `;
+      }
+
+      function drawCombined() {
+        const theta = Number(angleCircle.value);
+        const rad = degToRad(theta);
+        const s = Math.sin(rad);
+        const c = Math.cos(rad);
+        const t = Math.abs(c) < 1e-8 ? Infinity : s / c;
+
+        combinedInsights.innerHTML = `
+          <li>Ângulo atual: <strong>${theta}°</strong>.</li>
+          <li>No círculo unitário: x = cos(θ) = <strong>${fmt(c)}</strong> e y = sen(θ) = <strong>${fmt(s)}</strong>.</li>
+          <li>No triângulo com hipotenusa 1: cateto adjacente = cos(θ), cateto oposto = sen(θ).</li>
+          <li>Tangente como inclinação: tg(θ) = ${fmt(t)}.</li>
+        `;
+
+        const cx = 130;
+        const cy = 170;
+        const r = 95;
+        const x = cx + r * c;
+        const y = cy - r * s;
+
+        const tx = 350;
+        const ty = 260;
+        const scale = 95;
+        const triAdj = c * scale;
+        const triOp = s * scale;
+
+        combinedSvg.innerHTML = `
+          <text x="45" y="25" fill="#5bd4ff">Círculo unitário</text>
+          <line x1="30" y1="170" x2="230" y2="170" stroke="#385d88" />
+          <line x1="130" y1="60" x2="130" y2="280" stroke="#385d88" />
+          <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#8fb8ff" stroke-width="2" />
+          <line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#5bd4ff" stroke-width="3" />
+          <line x1="${x}" y1="${y}" x2="${x}" y2="${cy}" stroke="#7dffb2" stroke-width="2" />
+          <line x1="${x}" y1="${cy}" x2="${cx}" y2="${cy}" stroke="#ffc15d" stroke-width="2" />
+
+          <text x="290" y="25" fill="#5bd4ff">Triângulo equivalente (hipotenusa = 1)</text>
+          <polygon points="${tx},${ty} ${tx + triAdj},${ty} ${tx + triAdj},${ty - triOp}" fill="rgba(91,212,255,.2)" stroke="#5bd4ff" stroke-width="2" />
+          <text x="${tx + triAdj / 2}" y="${ty + 18}" fill="#ffc15d">cos(θ)</text>
+          <text x="${tx + triAdj + 8}" y="${ty - triOp / 2}" fill="#7dffb2">sen(θ)</text>
+          <text x="${tx + triAdj / 2 - 8}" y="${ty - triOp / 2 - 8}" fill="#fff">1</text>
+          <rect x="${tx + triAdj - 12}" y="${ty - 12}" width="12" height="12" fill="none" stroke="#ffc15d" stroke-width="2" />
+        `;
+      }
+
+      function drawTrigGraph() {
+        const canvas = document.getElementById('trigCanvas');
+        const ctx = canvas.getContext('2d');
+        const w = canvas.width;
+        const h = canvas.height;
+        ctx.clearRect(0, 0, w, h);
+
+        ctx.fillStyle = '#0a1830';
+        ctx.fillRect(0, 0, w, h);
+
+        const yMid = h / 2;
+        const scaleY = 120;
+        const xMin = -2 * Math.PI;
+        const xMax = 2 * Math.PI;
+
+        function toX(x) {
+          return ((x - xMin) / (xMax - xMin)) * w;
+        }
+
+        function toY(y) {
+          return yMid - y * scaleY;
+        }
+
+        ctx.strokeStyle = '#385d88';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, yMid);
+        ctx.lineTo(w, yMid);
+        ctx.stroke();
+
+        const ticks = [-2 * Math.PI, -Math.PI, 0, Math.PI, 2 * Math.PI];
+        ctx.fillStyle = '#bfd8ff';
+        ticks.forEach((t) => {
+          const px = toX(t);
+          ctx.beginPath();
+          ctx.moveTo(px, yMid - 6);
+          ctx.lineTo(px, yMid + 6);
+          ctx.stroke();
+          const label = t === 0 ? '0' : `${(t / Math.PI).toFixed(0)}π`;
+          ctx.fillText(label, px - 10, yMid + 20);
+        });
+
+        function plot(fn, color, cap = null) {
+          ctx.strokeStyle = color;
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          let started = false;
+          for (let px = 0; px <= w; px++) {
+            const x = xMin + (px / w) * (xMax - xMin);
+            let y = fn(x);
+            if (cap !== null) {
+              if (!Number.isFinite(y) || Math.abs(y) > cap) {
+                started = false;
+                continue;
+              }
+            }
+            const py = toY(y);
+            if (!started) {
+              ctx.moveTo(px, py);
+              started = true;
+            } else {
+              ctx.lineTo(px, py);
+            }
+          }
+          ctx.stroke();
+        }
+
+        plot(Math.sin, '#5bd4ff');
+        plot(Math.cos, '#7dffb2');
+        plot(Math.tan, '#ffc15d', 2.2);
+      }
+
+      function toggleAnswer(id) {
+        const el = document.getElementById(id);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+      }
+
+      function triangleMiniSvg(angleDeg, hyp) {
+        const r = degToRad(angleDeg);
+        const adj = hyp * Math.cos(r);
+        const op = hyp * Math.sin(r);
+        const scale = 10;
+        const x0 = 20;
+        const y0 = 130;
+        const x1 = x0 + adj * scale;
+        const y1 = y0;
+        const x2 = x1;
+        const y2 = y0 - op * scale;
+        return `
+          <svg class="mini-svg" viewBox="0 0 220 150" aria-label="Triângulo da pergunta">
+            <polygon points="${x0},${y0} ${x1},${y1} ${x2},${y2}" fill="rgba(91,212,255,.2)" stroke="#5bd4ff" stroke-width="2"></polygon>
+            <rect x="${x1 - 10}" y="${y1 - 10}" width="10" height="10" fill="none" stroke="#ffc15d" stroke-width="2"></rect>
+            <text x="${x0 + 5}" y="${y0 - 8}" fill="#ffc15d" font-size="12">${angleDeg}°</text>
+            <text x="${(x0 + x1) / 2}" y="${y0 + 14}" fill="#fff" font-size="11">adj</text>
+            <text x="${x2 + 4}" y="${(y0 + y2) / 2}" fill="#fff" font-size="11">op</text>
+            <text x="${(x0 + x2) / 2 - 8}" y="${(y0 + y2) / 2 - 8}" fill="#7dffb2" font-size="11">hip=${hyp}</text>
+          </svg>
+        `;
+      }
+
+      function circleMiniSvg(angleDeg) {
+        const rads = degToRad(angleDeg);
+        const cx = 110;
+        const cy = 75;
+        const rr = 52;
+        const x = cx + rr * Math.cos(rads);
+        const y = cy - rr * Math.sin(rads);
+        return `
+          <svg class="mini-svg" viewBox="0 0 220 150" aria-label="Círculo da pergunta">
+            <line x1="20" y1="${cy}" x2="200" y2="${cy}" stroke="#385d88"></line>
+            <line x1="${cx}" y1="15" x2="${cx}" y2="135" stroke="#385d88"></line>
+            <circle cx="${cx}" cy="${cy}" r="${rr}" fill="none" stroke="#8fb8ff" stroke-width="2"></circle>
+            <line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#5bd4ff" stroke-width="2.5"></line>
+            <line x1="${x}" y1="${y}" x2="${x}" y2="${cy}" stroke="#7dffb2" stroke-width="2"></line>
+            <line x1="${cx}" y1="${cy}" x2="${x}" y2="${cy}" stroke="#ffc15d" stroke-width="2"></line>
+            <circle cx="${x}" cy="${y}" r="3.5" fill="#fff"></circle>
+            <text x="14" y="18" fill="#ffc15d" font-size="12">θ=${angleDeg}°</text>
+          </svg>
+        `;
+      }
+
+      function waveMiniSvg(kind) {
+        const colors = { sen: '#5bd4ff', cos: '#7dffb2', tg: '#ffc15d' };
+        const path = [];
+        const w = 220;
+        const h = 150;
+        const mid = h / 2;
+        const max = 2 * Math.PI;
+        for (let i = 0; i <= 180; i++) {
+          const x = (i / 180) * w;
+          const t = -max + (i / 180) * (2 * max);
+          let yv = kind === 'sen' ? Math.sin(t) : kind === 'cos' ? Math.cos(t) : Math.tan(t);
+          if (kind === 'tg') {
+            if (!Number.isFinite(yv) || Math.abs(yv) > 2) {
+              path.push(null);
+              continue;
+            }
+          }
+          const y = mid - yv * 35;
+          path.push([x, y]);
+        }
+        let d = '';
+        let penUp = true;
+        for (const p of path) {
+          if (!p) {
+            penUp = true;
+            continue;
+          }
+          d += `${penUp ? 'M' : 'L'} ${p[0].toFixed(1)} ${p[1].toFixed(1)} `;
+          penUp = false;
+        }
+        return `
+          <svg class="mini-svg" viewBox="0 0 220 150" aria-label="Onda da pergunta">
+            <line x1="0" y1="${mid}" x2="${w}" y2="${mid}" stroke="#385d88"></line>
+            <path d="${d}" fill="none" stroke="${colors[kind]}" stroke-width="2.4"></path>
+            <text x="8" y="16" fill="${colors[kind]}" font-size="12">${kind}(x)</text>
+          </svg>
+        `;
+      }
+
+      function renderVisualQuestions() {
+        const questions = [
+          { t: 'tri', a: 30, h: 10, q: 'No desenho, qual é o valor do cateto oposto?', ans: 'oposto = 10·sen(30°) = 5.' },
+          { t: 'tri', a: 45, h: 8, q: 'Qual a razão tg(θ) nesse triângulo?', ans: 'tg(45°)=1.' },
+          { t: 'tri', a: 60, h: 12, q: 'Qual é o cateto adjacente?', ans: 'adjacente = 12·cos(60°)=6.' },
+          { t: 'tri', a: 37, h: 15, q: 'Qual expressão calcula o cateto oposto?', ans: 'op = h·sen(θ) = 15·sen(37°).' },
+          { t: 'tri', a: 53, h: 20, q: 'Qual expressão calcula o adjacente?', ans: 'adj = h·cos(θ) = 20·cos(53°).' },
+          { t: 'tri', a: 25, h: 9, q: 'Se aumentar θ, o oposto cresce ou diminui?', ans: 'Cresce, porque sen(θ) aumenta nesse intervalo.' },
+          { t: 'cir', a: 0, q: 'Qual o ponto no círculo?', ans: '(1, 0).' },
+          { t: 'cir', a: 90, q: 'Qual o ponto no círculo?', ans: '(0, 1).' },
+          { t: 'cir', a: 180, q: 'Qual o ponto no círculo?', ans: '(-1, 0).' },
+          { t: 'cir', a: 270, q: 'Qual o ponto no círculo?', ans: '(0, -1).' },
+          { t: 'cir', a: 30, q: 'O cos(θ) é positivo ou negativo?', ans: 'Positivo (1º quadrante).' },
+          { t: 'cir', a: 150, q: 'O seno é positivo ou negativo?', ans: 'Positivo (2º quadrante).' },
+          { t: 'cir', a: 225, q: 'Seno e cosseno têm quais sinais?', ans: 'Ambos negativos (3º quadrante).' },
+          { t: 'cir', a: 330, q: 'Seno e cosseno têm quais sinais?', ans: 'sen negativo e cos positivo (4º quadrante).' },
+          { t: 'cir', a: 60, q: 'tg(θ) tende a ser positiva ou negativa?', ans: 'Positiva no 1º quadrante.' },
+          { t: 'cir', a: 120, q: 'tg(θ) tende a ser positiva ou negativa?', ans: 'Negativa no 2º quadrante.' },
+          { t: 'wave', k: 'sen', q: 'Qual função zera em x=0 neste gráfico?', ans: 'sen(x), pois sen(0)=0.' },
+          { t: 'wave', k: 'cos', q: 'Qual função inicia em 1 quando x=0?', ans: 'cos(x), pois cos(0)=1.' },
+          { t: 'wave', k: 'tg', q: 'Por que há “quebras” no traço?', ans: 'Assíntotas onde cos(x)=0.' },
+          { t: 'wave', k: 'sen', q: 'A função é periódica? Qual período?', ans: 'Sim, período 2π.' },
+          { t: 'wave', k: 'cos', q: 'A função também é periódica? Qual período?', ans: 'Sim, período 2π.' },
+          { t: 'wave', k: 'tg', q: 'Qual o período da tangente?', ans: 'π.' },
+          { t: 'tri', a: 75, h: 14, q: 'θ alto: qual razão fica maior, sen ou cos?', ans: 'sen(75°) > cos(75°).' },
+          { t: 'cir', a: 315, q: 'O ponto está acima ou abaixo do eixo x?', ans: 'Abaixo (seno negativo).' }
+        ];
+
+        const container = document.getElementById('visualQuestionBank');
+        container.innerHTML = questions
+          .map((item, idx) => {
+            const qid = `vq-${idx}`;
+            const visual =
+              item.t === 'tri'
+                ? triangleMiniSvg(item.a, item.h)
+                : item.t === 'cir'
+                ? circleMiniSvg(item.a)
+                : waveMiniSvg(item.k);
+            return `
+              <article class="visual-question">
+                <h4>Pergunta ${idx + 1}</h4>
+                ${visual}
+                <p>${item.q}</p>
+                <button onclick="toggleAnswer('${qid}')">Mostrar resposta</button>
+                <p id="${qid}" class="visual-answer">${item.ans}</p>
+              </article>
+            `;
+          })
+          .join('');
+      }
+
+      angleTriangle.addEventListener('input', drawTriangle);
+      hypotenuse.addEventListener('input', drawTriangle);
+
+      angleCircle.addEventListener('input', () => {
+        drawCircle();
+        drawCombined();
+      });
+
+      drawTriangle();
+      drawCircle();
+      drawCombined();
+      drawTrigGraph();
+      renderVisualQuestions();
+      window.toggleAnswer = toggleAnswer;
+    </script>
+  </body>
+</html>
